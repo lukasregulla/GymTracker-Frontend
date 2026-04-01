@@ -13,6 +13,8 @@ import { useLogSet, useDeleteSet } from '@/hooks/useSets'
 import { useExercises } from '@/hooks/useExercises'
 import type { SessionExerciseDto, SetDto } from '@/types'
 
+const MUSCLE_GROUPS = ['All', 'Chest', 'Back', 'Shoulders', 'Arms', 'Legs', 'Core', 'Cardio']
+
 export default function LogWorkout() {
   const { id } = useParams<{ id: string }>()
   const sessionId = Number(id)
@@ -29,6 +31,7 @@ export default function LogWorkout() {
   const [removeExId, setRemoveExId] = useState<number | null>(null)
   const [addExOpen, setAddExOpen] = useState(false)
   const [exSearch, setExSearch] = useState('')
+  const [exMuscleFilter, setExMuscleFilter] = useState('All')
   if (isLoading) {
     return (
       <div className="px-4 pt-6 space-y-4">
@@ -81,6 +84,7 @@ export default function LogWorkout() {
   const filteredExercises = allExercises?.filter(
     (ex) =>
       ex.name.toLowerCase().includes(exSearch.toLowerCase()) &&
+      (exMuscleFilter === 'All' || ex.muscleGroup === exMuscleFilter) &&
       !existingExerciseIds.has(ex.id)
   ) ?? []
 
@@ -171,7 +175,7 @@ export default function LogWorkout() {
         open={addExOpen}
         onOpenChange={(open) => {
           setAddExOpen(open)
-          if (!open) setExSearch('')
+          if (!open) { setExSearch(''); setExMuscleFilter('All') }
         }}
       >
         <SheetContent>
@@ -187,6 +191,22 @@ export default function LogWorkout() {
                 onChange={(e) => setExSearch(e.target.value)}
                 className="pl-9"
               />
+            </div>
+            <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-none">
+              {MUSCLE_GROUPS.map((mg) => (
+                <button
+                  key={mg}
+                  type="button"
+                  onClick={() => setExMuscleFilter(mg)}
+                  className={`shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-colors active:scale-95 ${
+                    exMuscleFilter === mg
+                      ? 'bg-primary text-white'
+                      : 'bg-surface2 text-text-secondary border border-border'
+                  }`}
+                >
+                  {mg}
+                </button>
+              ))}
             </div>
             <div className="space-y-2">
               {filteredExercises.length === 0 && (

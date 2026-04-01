@@ -4,6 +4,7 @@
 
 :root {
   color-scheme: dark;
+  --color-primary-rgb: 255 107 53; /* default: orange #FF6B35 */
 }
 
 body {
