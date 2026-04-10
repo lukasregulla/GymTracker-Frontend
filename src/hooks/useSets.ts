@@ -29,6 +29,7 @@ export const useUpdateSet = (sessionId: number) => {
     }: {
       sessionExerciseId: number
       setId: number
+      setNumber: number
       weightKg?: number
       reps?: number
     }) => setsApi.updateSet(sessionId, sessionExerciseId, setId, payload),

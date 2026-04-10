@@ -497,7 +497,13 @@ function SetRow({
     const w = parseFloat(editWeight)
     if (!isNaN(w) && w > 0) {
       onMarkEdited(set.id)
-      updateSet.mutate({ sessionExerciseId, setId: set.id, weightKg: w, reps: set.reps })
+      updateSet.mutate({
+    sessionExerciseId,
+    setId: set.id,
+    setNumber: set.setNumber,
+    weightKg: w,
+    reps: set.reps,
+})
     } else {
       setEditWeight(String(set.weightKg))
     }
@@ -508,7 +514,13 @@ function SetRow({
     const r = parseInt(editReps, 10)
     if (!isNaN(r) && r > 0) {
       onMarkEdited(set.id)
-      updateSet.mutate({ sessionExerciseId, setId: set.id, weightKg: set.weightKg, reps: r })
+      updateSet.mutate({
+    sessionExerciseId,
+    setId: set.id,
+    setNumber: set.setNumber,
+    weightKg: set.weightKg,
+    reps: r,
+    })
     } else {
       setEditReps(String(set.reps))
     }
