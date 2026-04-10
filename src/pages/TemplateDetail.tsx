@@ -18,6 +18,7 @@ import { useExercises } from '@/hooks/useExercises'
 import type { TemplateExerciseDto } from '@/types'
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+const MUSCLE_GROUPS = ['All', 'Chest', 'Back', 'Shoulders', 'Arms', 'Legs', 'Core', 'Cardio']
 
 export default function TemplateDetail() {
   const { id } = useParams<{ id: string }>()
@@ -42,6 +43,7 @@ export default function TemplateDetail() {
   // Add exercise sheet state
   const [addOpen, setAddOpen] = useState(false)
   const [exSearch, setExSearch] = useState('')
+  const [exMuscleFilter, setExMuscleFilter] = useState('All')
   const [selectedExId, setSelectedExId] = useState<number | null>(null)
   const [defaultSets, setDefaultSets] = useState('3')
   const [defaultReps, setDefaultReps] = useState('10')
@@ -130,6 +132,7 @@ export default function TemplateDetail() {
     allExercises?.filter(
       (ex) =>
         ex.name.toLowerCase().includes(exSearch.toLowerCase()) &&
+        (exMuscleFilter === 'All' || ex.muscleGroup === exMuscleFilter) &&
         !template?.exercises.some((te) => te.exerciseId === ex.id)
     ) ?? []
 
@@ -322,6 +325,7 @@ export default function TemplateDetail() {
           if (!open) {
             setExSearch('')
             setSelectedExId(null)
+            setExMuscleFilter('All')
           }
         }}
       >
@@ -338,6 +342,23 @@ export default function TemplateDetail() {
                 onChange={(e) => setExSearch(e.target.value)}
                 className="pl-9"
               />
+            </div>
+
+            <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-none">
+              {MUSCLE_GROUPS.map((mg) => (
+                <button
+                  key={mg}
+                  type="button"
+                  onClick={() => setExMuscleFilter(mg)}
+                  className={`shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-colors active:scale-95 ${
+                    exMuscleFilter === mg
+                      ? 'bg-primary text-white'
+                      : 'bg-surface2 text-text-secondary border border-border'
+                  }`}
+                >
+                  {mg}
+                </button>
+              ))}
             </div>
 
             <div className="space-y-2 max-h-52 overflow-y-auto">
