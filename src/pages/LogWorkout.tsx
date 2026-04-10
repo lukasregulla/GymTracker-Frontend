@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { SkeletonCard } from '@/components/SkeletonCard'
 import { useSession, useCompleteSession, useRemoveSessionExercise, useAddSessionExercise } from '@/hooks/useSessions'
-import { useLogSet, useDeleteSet } from '@/hooks/useSets'
+import { useLogSet, useDeleteSet, useUpdateSet } from '@/hooks/useSets'
 import { useExercises } from '@/hooks/useExercises'
 import type { SessionExerciseDto, SetDto } from '@/types'
 
@@ -32,6 +32,8 @@ export default function LogWorkout() {
   const [addExOpen, setAddExOpen] = useState(false)
   const [exSearch, setExSearch] = useState('')
   const [exMuscleFilter, setExMuscleFilter] = useState('All')
+
+
   if (isLoading) {
     return (
       <div className="px-4 pt-6 space-y-4">
@@ -297,6 +299,17 @@ function ExerciseCard({
   const [pbSetId, setPbSetId] = useState<number | null>(null)
   const weightRef = useRef<HTMLInputElement>(null)
 
+  // Sets that existed when this card first mounted are treated as prefilled.
+  // Using lazy useState so the set is captured once at mount, never updated.
+  const [prefilledIds] = useState<Set<number>>(
+    () => new Set(exercise.sets.map((s) => s.id))
+  )
+  // IDs the user has edited (un-greys the row without requiring a re-fetch).
+  const [editedIds, setEditedIds] = useState<Set<number>>(new Set())
+
+  const markEdited = (setId: number) =>
+    setEditedIds((prev) => { const n = new Set(prev); n.add(setId); return n })
+
   // Each ExerciseCard gets its own logSet/deleteSet bound to sessionId
   const logSet = useLogSet(sessionId)
   const deleteSet = useDeleteSet(sessionId)
@@ -369,8 +382,12 @@ function ExerciseCard({
               <SetRow
                 key={set.id}
                 set={set}
+                sessionId={sessionId}
+                sessionExerciseId={exercise.sessionExerciseId}
                 isFlashing={flashSetId === set.id}
                 isPbPulsing={pbSetId === set.id}
+                isPrefilled={!disabled && prefilledIds.has(set.id) && !editedIds.has(set.id)}
+                onMarkEdited={markEdited}
                 onDelete={() =>
                   deleteSet.mutate({
                     sessionExerciseId: exercise.sessionExerciseId,
@@ -389,6 +406,7 @@ function ExerciseCard({
         <>
           {!expanded ? (
             <button
+              type="button"
               onClick={onToggle}
               className="w-full border-t border-border px-4 py-3 flex items-center gap-2 text-primary text-sm font-medium active:bg-surface2 transition-colors"
             >
@@ -449,49 +467,112 @@ function ExerciseCard({
 
 interface SetRowProps {
   set: SetDto
+  sessionId: number
+  sessionExerciseId: number
   isFlashing: boolean
   isPbPulsing: boolean
+  isPrefilled: boolean
+  onMarkEdited: (setId: number) => void
   onDelete: () => void
   disabled: boolean
 }
 
-function SetRow({ set, isFlashing, isPbPulsing, onDelete, disabled }: SetRowProps) {
+function SetRow({
+  set,
+  sessionId,
+  sessionExerciseId,
+  isFlashing,
+  isPbPulsing,
+  isPrefilled,
+  onMarkEdited,
+  onDelete,
+  disabled,
+}: SetRowProps) {
+  const [editWeight, setEditWeight] = useState(String(set.weightKg))
+  const [editReps, setEditReps] = useState(String(set.reps))
+  const updateSet = useUpdateSet(sessionId)
+
+  const handleWeightBlur = () => {
+    if (editWeight === String(set.weightKg)) return
+    const w = parseFloat(editWeight)
+    if (!isNaN(w) && w > 0) {
+      onMarkEdited(set.id)
+      updateSet.mutate({ sessionExerciseId, setId: set.id, weightKg: w, reps: set.reps })
+    } else {
+      setEditWeight(String(set.weightKg))
+    }
+  }
+
+  const handleRepsBlur = () => {
+    if (editReps === String(set.reps)) return
+    const r = parseInt(editReps, 10)
+    if (!isNaN(r) && r > 0) {
+      onMarkEdited(set.id)
+      updateSet.mutate({ sessionExerciseId, setId: set.id, weightKg: set.weightKg, reps: r })
+    } else {
+      setEditReps(String(set.reps))
+    }
+  }
+
   return (
-  <div
-    className={`flex items-center rounded-lg px-3 py-2 ${
-      isFlashing ? 'animate-flash' : ''
-    }`}
-  >
-    <span className="text-text-secondary text-sm w-14">
-      Set {set.setNumber}
-    </span>
-
-    <span className="text-white font-medium flex-1 text-right pr-2">
-      {set.weightKg}kg × {set.reps}
-    </span>
-
-    <div className="flex items-center gap-2 w-[60px] justify-end">
-      <span
-        className={`text-xs px-2 py-0.5 rounded-full ${
-          set.isPersonalBest
-            ? 'bg-success/20 text-success opacity-100'
-            : 'opacity-0'
-        } ${isPbPulsing ? 'animate-pbPulse' : ''}`}
-      >
-        PB
+    <div
+      className={`flex items-center rounded-lg px-3 py-2 ${isFlashing ? 'animate-flash' : ''}`}
+    >
+      <span className={`text-sm w-14 ${isPrefilled ? 'text-text-secondary/50' : 'text-text-secondary'}`}>
+        Set {set.setNumber}
       </span>
 
-      {!disabled && (
-        <button
-          type="button"
-          aria-label="Delete set"
-          onClick={onDelete}
-          className="w-6 h-6 flex items-center justify-center text-text-secondary active:scale-95 transition-transform opacity-50"
-        >
-          <Trash2 className="w-3.5 h-3.5" />
-        </button>
+      {isPrefilled ? (
+        <div className="flex items-center gap-1.5 flex-1 justify-end pr-2">
+          <input
+            type="text"
+            inputMode="decimal"
+            aria-label={`Set ${set.setNumber} weight in kg`}
+            value={editWeight}
+            onChange={(e) => setEditWeight(e.target.value)}
+            onBlur={handleWeightBlur}
+            className="w-14 text-center text-sm font-medium bg-surface2 border border-border rounded text-text-secondary/70 px-1 py-0.5"
+          />
+          <span className="text-text-secondary/50 text-xs">kg ×</span>
+          <input
+            type="text"
+            inputMode="numeric"
+            aria-label={`Set ${set.setNumber} reps`}
+            value={editReps}
+            onChange={(e) => setEditReps(e.target.value)}
+            onBlur={handleRepsBlur}
+            className="w-10 text-center text-sm font-medium bg-surface2 border border-border rounded text-text-secondary/70 px-1 py-0.5"
+          />
+          <span className="text-text-secondary/50 text-xs">reps</span>
+        </div>
+      ) : (
+        <span className="text-white font-medium flex-1 text-right pr-2">
+          {set.weightKg}kg × {set.reps}
+        </span>
       )}
+
+      <div className="flex items-center gap-2 w-[60px] justify-end">
+        <span
+          className={`text-xs px-2 py-0.5 rounded-full ${
+            set.isPersonalBest
+              ? 'bg-success/20 text-success opacity-100'
+              : 'opacity-0'
+          } ${isPbPulsing ? 'animate-pbPulse' : ''}`}
+        >
+          PB
+        </span>
+
+        {!disabled && (
+          <button
+            type="button"
+            aria-label="Delete set"
+            onClick={onDelete}
+            className="w-6 h-6 flex items-center justify-center text-text-secondary active:scale-95 transition-transform opacity-50"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </div>
     </div>
-  </div>
-)
+  )
 }
