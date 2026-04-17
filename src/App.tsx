@@ -3,6 +3,9 @@ import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { BottomNav } from '@/components/BottomNav'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
+import ConfirmEmail from '@/pages/ConfirmEmail'
+import ForgotPassword from '@/pages/ForgotPassword'
+import ResetPassword from '@/pages/ResetPassword'
 import Dashboard from '@/pages/Dashboard'
 import Exercises from '@/pages/Exercises'
 import ExerciseProgress from '@/pages/ExerciseProgress'
@@ -32,6 +35,9 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/confirm-email" element={<ConfirmEmail />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route
         path="/*"
         element={

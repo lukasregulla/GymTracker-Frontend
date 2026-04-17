@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Loader2, Dumbbell } from 'lucide-react'
+import { Loader2, Dumbbell, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useRegister } from '@/hooks/useAuth'
@@ -27,6 +27,31 @@ export default function Register() {
           }
         },
       }
+    )
+  }
+
+  if (register.isSuccess) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
+        <div className="w-full max-w-sm">
+          <div className="flex flex-col items-center mb-8">
+            <div className="w-14 h-14 rounded-2xl bg-success/20 flex items-center justify-center mb-3">
+              <Mail className="w-7 h-7 text-success" />
+            </div>
+            <h1 className="text-2xl font-bold text-white">Check your email</h1>
+            <p className="text-text-secondary text-sm mt-1 text-center">
+              We've sent a confirmation link to{' '}
+              <span className="text-white font-medium">{email}</span>.
+              Click the link to activate your account.
+            </p>
+          </div>
+          <p className="text-center text-text-secondary text-sm mt-6">
+            <Link to="/login" className="text-primary font-medium">
+              Back to log in
+            </Link>
+          </p>
+        </div>
+      </div>
     )
   }
 

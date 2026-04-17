@@ -17,6 +17,11 @@ client.interceptors.response.use(
   (response) => response,
   (error: AxiosError<{ message?: string; errors?: Record<string, string[]>; status?: number }>) => {
     if (error.response?.status === 401) {
+      const url = error.config?.url ?? ''
+      const isAuthEndpoint = url.includes('/api/auth/login') || url.includes('/api/auth/register')
+      if (isAuthEndpoint) {
+        return Promise.reject(error)
+      }
       localStorage.removeItem('gym_token')
       localStorage.removeItem('gym_username')
       window.location.href = '/login'
