@@ -36,32 +36,47 @@ export default function RunSessions() {
         </div>
       ) : runs && runs.length > 0 ? (
         <div className="space-y-3">
-          {runs.map((run) => (
-            <button
-              key={run.id}
-              onClick={() => navigate(`/runs/${run.id}`)}
-              className="w-full bg-surface border border-border rounded-xl p-4 flex items-center gap-3 text-left active:scale-[0.98] transition-transform animate-scaleIn"
-            >
-              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                <Activity className="w-5 h-5 text-primary" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-medium text-white truncate">
-                  {run.name ?? `${run.distanceKm}km Run`}
-                </p>
-                <p className="text-text-secondary text-sm">
-                  {run.distanceKm}km · {formatDuration(run.durationSeconds)}
-                  {run.runType ? ` · ${run.runType}` : ''}
-                </p>
-                {run.scheduledDate && (
-                  <p className="text-text-secondary text-xs">
-                    {format(parseISO(run.scheduledDate), 'EEE, MMM d')}
-                  </p>
-                )}
-              </div>
-              <ChevronRight className="w-4 h-4 text-text-secondary shrink-0" />
-            </button>
-          ))}
+          {runs.map((run) => {
+            const title =
+              run.name ??
+              (run.distanceKm != null ? `${run.distanceKm}km Run` : 'Scheduled Run')
+
+            const meta = [
+              run.distanceKm != null ? `${run.distanceKm}km` : null,
+              run.durationSeconds != null ? formatDuration(run.durationSeconds) : null,
+              run.runType || null,
+            ]
+              .filter(Boolean)
+              .join(' · ')
+
+            return (
+              <button
+                key={run.id}
+                onClick={() => navigate(`/runs/${run.id}`)}
+                className="w-full bg-surface border border-border rounded-xl p-4 flex items-center gap-3 text-left active:scale-[0.98] transition-transform animate-scaleIn"
+              >
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                  <Activity className="w-5 h-5 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-white truncate">{title}</p>
+
+                  {meta ? (
+                    <p className="text-text-secondary text-sm">{meta}</p>
+                  ) : (
+                    <p className="text-text-secondary text-sm">Scheduled run</p>
+                  )}
+
+                  {run.scheduledDate && (
+                    <p className="text-text-secondary text-xs">
+                      {format(parseISO(run.scheduledDate), 'EEE, MMM d')}
+                    </p>
+                  )}
+                </div>
+                <ChevronRight className="w-4 h-4 text-text-secondary shrink-0" />
+              </button>
+            )
+          })}
         </div>
       ) : (
         <div className="bg-surface border border-border rounded-xl p-6 text-center">
