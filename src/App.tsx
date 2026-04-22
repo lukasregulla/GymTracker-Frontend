@@ -19,6 +19,8 @@ import Calendar from '@/pages/Calendar'
 import Profile from '@/pages/Profile'
 import LogChoice from '@/pages/LogChoice'
 import NewRunSession from '@/pages/NewRunSession'
+import RunChoice from '@/pages/RunChoice'
+import ScheduleRun from '@/pages/ScheduleRun'
 import RunSessionDetail from '@/pages/RunSessionDetail'
 import RunSessions from '@/pages/RunSessions'
 
@@ -62,6 +64,8 @@ export default function App() {
                 <Route path="/log" element={<LogChoice />} />
                 <Route path="/runs" element={<RunSessions />} />
                 <Route path="/runs/new" element={<NewRunSession />} />
+                <Route path="/runs/choose" element={<RunChoice />} />
+                <Route path="/runs/schedule" element={<ScheduleRun />} />
                 <Route path="/runs/:id" element={<RunSessionDetail />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>

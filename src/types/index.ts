@@ -90,8 +90,8 @@ export interface RunSessionDto {
   completedAt: string | null
   isCompleted: boolean
   notes: string
-  distanceKm: number
-  durationSeconds: number
-  averagePaceSecondsPerKm: number
+  distanceKm: number | null
+  durationSeconds: number | null
+  averagePaceSecondsPerKm: number | null
   runType: string | null
 }

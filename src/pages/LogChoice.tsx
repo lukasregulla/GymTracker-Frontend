@@ -24,7 +24,7 @@ export default function LogChoice() {
 
       <button
         type="button"
-        onClick={() => navigate('/runs/new')}
+        onClick={() => navigate('/runs/choose')}
         className="w-full bg-surface border border-border rounded-xl p-6 flex items-center gap-4 text-left active:scale-[0.98] transition-transform"
       >
         <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0">

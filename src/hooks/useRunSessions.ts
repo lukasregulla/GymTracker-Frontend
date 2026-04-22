@@ -24,3 +24,23 @@ export const useCreateRunSession = () => {
     },
   })
 }
+
+export const useScheduleRunSession = () => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: runSessionsApi.schedule,
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['runSessions'] }),
+  })
+}
+
+export const useCompleteRunSession = (id: number) => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (payload: Parameters<typeof runSessionsApi.complete>[1]) =>
+      runSessionsApi.complete(id, payload),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['runSession', id] })
+      qc.invalidateQueries({ queryKey: ['runSessions'] })
+    },
+  })
+}
