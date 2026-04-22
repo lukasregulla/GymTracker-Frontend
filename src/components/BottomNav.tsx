@@ -4,7 +4,7 @@ import { Home, Calendar, Plus, Dumbbell, LayoutTemplate } from 'lucide-react'
 const navItems = [
   { to: '/', icon: Home, label: 'Dashboard' },
   { to: '/schedule', icon: Calendar, label: 'Schedule' },
-  { to: '/sessions/new', icon: Plus, label: 'Log', isCenter: true },
+  { to: '/log', icon: Plus, label: 'Log', isCenter: true },
   { to: '/exercises', icon: Dumbbell, label: 'Exercises' },
   { to: '/templates', icon: LayoutTemplate, label: 'Templates' },
 ]

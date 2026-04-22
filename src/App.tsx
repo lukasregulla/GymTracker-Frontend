@@ -17,6 +17,10 @@ import NewTemplate from '@/pages/NewTemplate'
 import TemplateDetail from '@/pages/TemplateDetail'
 import Calendar from '@/pages/Calendar'
 import Profile from '@/pages/Profile'
+import LogChoice from '@/pages/LogChoice'
+import NewRunSession from '@/pages/NewRunSession'
+import RunSessionDetail from '@/pages/RunSessionDetail'
+import RunSessions from '@/pages/RunSessions'
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation()
@@ -55,6 +59,10 @@ export default function App() {
                 <Route path="/templates/:id" element={<TemplateDetail />} />
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/log" element={<LogChoice />} />
+                <Route path="/runs" element={<RunSessions />} />
+                <Route path="/runs/new" element={<NewRunSession />} />
+                <Route path="/runs/:id" element={<RunSessionDetail />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </AppLayout>

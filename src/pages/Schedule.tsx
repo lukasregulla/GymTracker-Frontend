@@ -99,7 +99,11 @@ export default function Schedule() {
           selectedDaySessions.map((session) => (
             <button
               key={session.id}
-              onClick={() => navigate(`/sessions/${session.id}`)}
+              onClick={() => navigate(
+                session.sessionType === 'Run'
+                  ? `/runs/${session.id}`
+                  : `/sessions/${session.id}`
+              )}
               className="w-full bg-surface border border-border rounded-xl p-4 flex items-center gap-3 text-left active:scale-[0.98] transition-transform"
             >
               <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${

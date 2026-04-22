@@ -50,6 +50,7 @@ export interface SessionDto {
   notes: string | null
   templateId: number | null
   templateName: string | null
+  sessionType: string
 }
 
 export interface SessionDetailDto extends SessionDto {
@@ -80,4 +81,17 @@ export interface WeeklyDashboardDto {
   totalScheduled: number
   totalCompleted: number
   sessions: SessionDto[]
+}
+
+export interface RunSessionDto {
+  id: number
+  name: string | null
+  scheduledDate: string | null
+  completedAt: string | null
+  isCompleted: boolean
+  notes: string
+  distanceKm: number
+  durationSeconds: number
+  averagePaceSecondsPerKm: number
+  runType: string | null
 }
