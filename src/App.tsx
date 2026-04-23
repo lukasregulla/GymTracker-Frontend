@@ -23,6 +23,7 @@ import RunChoice from '@/pages/RunChoice'
 import ScheduleRun from '@/pages/ScheduleRun'
 import RunSessionDetail from '@/pages/RunSessionDetail'
 import RunSessions from '@/pages/RunSessions'
+import Sessions from '@/pages/Sessions'
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation()
@@ -62,6 +63,7 @@ export default function App() {
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/log" element={<LogChoice />} />
+                <Route path="/sessions" element={<Sessions />} />
                 <Route path="/runs" element={<RunSessions />} />
                 <Route path="/runs/new" element={<NewRunSession />} />
                 <Route path="/runs/choose" element={<RunChoice />} />
