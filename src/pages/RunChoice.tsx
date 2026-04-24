@@ -1,8 +1,11 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Activity, CalendarPlus, ArrowLeft } from 'lucide-react'
 
 export default function RunChoice() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const date = searchParams.get('date')
+  const dateSuffix = date ? `?date=${date}` : ''
 
   return (
     <div className="px-4 pt-6 space-y-4">
@@ -20,7 +23,7 @@ export default function RunChoice() {
 
       <button
         type="button"
-        onClick={() => navigate('/runs/new')}
+        onClick={() => navigate(`/runs/new${dateSuffix}`)}
         className="w-full bg-surface border border-border rounded-xl p-6 flex items-center gap-4 text-left active:scale-[0.98] transition-transform"
       >
         <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
@@ -34,7 +37,7 @@ export default function RunChoice() {
 
       <button
         type="button"
-        onClick={() => navigate('/runs/schedule')}
+        onClick={() => navigate(`/runs/schedule${dateSuffix}`)}
         className="w-full bg-surface border border-border rounded-xl p-6 flex items-center gap-4 text-left active:scale-[0.98] transition-transform"
       >
         <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0">

@@ -115,6 +115,16 @@ export default function LogWorkout() {
           )}
         </div>
         {!session.isCompleted && (
+          <button
+            type="button"
+            aria-label="Add exercise"
+            onClick={() => setAddExOpen(true)}
+            className="w-10 h-10 rounded-full bg-primary flex items-center justify-center active:scale-95 transition-transform shrink-0"
+          >
+            <Plus className="w-5 h-5 text-white" />
+          </button>
+        )}
+        {!session.isCompleted && (
           <Button size="sm" onClick={() => setCompleteOpen(true)} className="shrink-0">
             Complete
           </Button>
@@ -129,7 +139,7 @@ export default function LogWorkout() {
         {sortedExercises.length === 0 && (
           <div className="bg-surface border border-border rounded-xl p-6 text-center">
             <p className="text-text-secondary">No exercises yet.</p>
-            <p className="text-text-secondary text-sm mt-1">Tap "Add Exercise" below to get started.</p>
+            <p className="text-text-secondary text-sm mt-1">Tap + above to add an exercise.</p>
           </div>
         )}
 
@@ -147,17 +157,6 @@ export default function LogWorkout() {
           />
         ))}
 
-        {/* Add exercise button */}
-        {!session.isCompleted && (
-          <button
-            type="button"
-            onClick={() => setAddExOpen(true)}
-            className="w-full border border-dashed border-border rounded-xl py-4 flex items-center justify-center gap-2 text-text-secondary active:bg-surface2 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            <span className="text-sm font-medium">Add Exercise</span>
-          </button>
-        )}
       </div>
 
       {/* Complete workout button */}

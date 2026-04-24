@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { format } from 'date-fns'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -10,7 +10,10 @@ const RUN_TYPES = ['Easy', 'Tempo', 'Long', 'Interval', 'Recovery', 'Race']
 
 export default function ScheduleRun() {
   const navigate = useNavigate()
-  const [scheduledDate, setScheduledDate] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const [searchParams] = useSearchParams()
+  const [scheduledDate, setScheduledDate] = useState(
+    searchParams.get('date') ?? format(new Date(), 'yyyy-MM-dd')
+  )
   const [name, setName] = useState('')
   const [distanceKm, setDistanceKm] = useState('')
   const [runType, setRunType] = useState('')

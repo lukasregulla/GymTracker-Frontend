@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { format } from 'date-fns'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -10,7 +10,8 @@ const RUN_TYPES = ['Easy', 'Tempo', 'Long', 'Interval', 'Recovery', 'Race']
 
 export default function NewRunSession() {
   const navigate = useNavigate()
-  const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const [searchParams] = useSearchParams()
+  const [date, setDate] = useState(searchParams.get('date') ?? format(new Date(), 'yyyy-MM-dd'))
   const [name, setName] = useState('')
   const [distanceKm, setDistanceKm] = useState('')
   const [durationMins, setDurationMins] = useState('')

@@ -85,7 +85,20 @@ export default function Exercises() {
 
   return (
     <div className="px-4 pt-6 space-y-4">
-      <h1 className="text-2xl font-bold text-white">Exercises</h1>
+      <div className="flex items-center justify-between">
+  <h1 className="text-2xl font-bold text-white">Exercises</h1>
+  <Sheet open={createOpen} onOpenChange={setCreateOpen}>
+    <SheetTrigger asChild>
+      <button
+        type="button"
+        aria-label="Add exercise"
+        className="w-10 h-10 rounded-full bg-primary flex items-center justify-center active:scale-95 transition-transform"
+      >
+        <Plus className="w-5 h-5 text-white" />
+      </button>
+    </SheetTrigger>
+  </Sheet>
+</div>
 
       {/* Search */}
       <div className="relative">
@@ -166,15 +179,6 @@ export default function Exercises() {
 
       {/* FAB — create exercise */}
       <Sheet open={createOpen} onOpenChange={setCreateOpen}>
-        <SheetTrigger asChild>
-          <button
-            type="button"
-            aria-label="Add exercise"
-            className="fixed bottom-20 right-4 w-14 h-14 rounded-full bg-primary flex items-center justify-center shadow-xl active:scale-95 transition-transform z-40"
-          >
-            <Plus className="w-6 h-6 text-white" />
-          </button>
-        </SheetTrigger>
         <SheetContent>
           <SheetHeader>
             <SheetTitle>New Exercise</SheetTitle>
