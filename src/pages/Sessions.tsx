@@ -4,11 +4,14 @@ import { Plus, Dumbbell, ChevronRight } from 'lucide-react'
 import { useSessions } from '@/hooks/useSessions'
 import { SkeletonCard } from '@/components/SkeletonCard'
 
+
 export default function Sessions() {
   const navigate = useNavigate()
   const { data: sessions, isLoading } = useSessions()
+  const Sessions = sessions?.filter(s => s.sessionType !== 'Run') ?? []
 
   return (
+    
     <div className="px-4 pt-6 space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-white">My Workouts</h1>
@@ -26,9 +29,9 @@ export default function Sessions() {
         <div className="space-y-3">
           {[1, 2, 3].map((i) => <SkeletonCard key={i} />)}
         </div>
-      ) : sessions && sessions.length > 0 ? (
+      ) : sessions && Sessions.length > 0 ? (
         <div className="space-y-3">
-          {sessions.map((session) => {
+          {Sessions.map((session) => {
             const title = session.name ?? session.templateName ?? 'Ad-hoc Session'
 
             const dateStr = session.completedAt
