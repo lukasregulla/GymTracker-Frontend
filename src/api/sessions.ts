@@ -12,9 +12,16 @@ export const sessionsApi = {
     return data
   },
 
-  create: async (payload: { name?: string; scheduledDate?: string; templateId?: number; notes?: string }): Promise<SessionDto> => {
-    const { data } = await client.post<SessionDto>('/api/sessions', payload)
-    return data
+  create: async (payload: {
+    name?: string
+    scheduledDate?: string
+    scheduledStartTime?: string
+    estimatedDurationMinutes?: number
+    templateId?: number
+    notes?: string
+  }): Promise<SessionDto> => {
+  const { data } = await client.post<SessionDto>('/api/sessions', payload)
+  return data
   },
 
   complete: async (id: number): Promise<SessionDto> => {

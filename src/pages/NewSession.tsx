@@ -1,46 +1,70 @@
-import { useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import { format } from 'date-fns'
-import { ArrowLeft, Loader2, Search, X, ChevronRight } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { useCreateSession } from '@/hooks/useSessions'
-import { useTemplates } from '@/hooks/useTemplates'
-import type { TemplateDto } from '@/types'
+import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { format } from "date-fns";
+import { ArrowLeft, Loader2, Search, X, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { useCreateSession } from "@/hooks/useSessions";
+import { useTemplates } from "@/hooks/useTemplates";
+import type { TemplateDto } from "@/types";
 
 export default function NewSession() {
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const prefillDate = searchParams.get('date') ?? ''
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const prefillDate = searchParams.get("date") ?? "";
 
-  const [date, setDate] = useState(prefillDate || format(new Date(), 'yyyy-MM-dd'))
-  const [sessionName, setSessionName] = useState('')
-  const [notes, setNotes] = useState('')
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateDto | null>(null)
-  const [templatePickerOpen, setTemplatePickerOpen] = useState(false)
-  const [templateSearch, setTemplateSearch] = useState('')
+  const [date, setDate] = useState(
+    prefillDate || format(new Date(), "yyyy-MM-dd"),
+  );
+  const [sessionName, setSessionName] = useState("");
+  const [notes, setNotes] = useState("");
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplateDto | null>(
+    null,
+  );
+  const [templatePickerOpen, setTemplatePickerOpen] = useState(false);
+  const [templateSearch, setTemplateSearch] = useState("");
+  const [scheduledStartTime, setScheduledStartTime] = useState("");
+  const [estimatedDurationMinutes, setEstimatedDurationMinutes] = useState("");
 
-  const createSession = useCreateSession()
-  const { data: templates } = useTemplates()
+  const createSession = useCreateSession();
+  const { data: templates } = useTemplates();
 
-  const filteredTemplates = templates?.filter((t) =>
-    t.name.toLowerCase().includes(templateSearch.toLowerCase())
-  ) ?? []
+  const filteredTemplates =
+    templates?.filter((t) =>
+      t.name.toLowerCase().includes(templateSearch.toLowerCase()),
+    ) ?? [];
+
+  const getCurrentTime = () => {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
 
   const handleCreate = () => {
     createSession.mutate(
       {
-        name: !selectedTemplate && sessionName.trim() ? sessionName.trim() : undefined,
+        name:
+          !selectedTemplate && sessionName.trim()
+            ? sessionName.trim()
+            : undefined,
         scheduledDate: date || undefined,
+        scheduledStartTime: scheduledStartTime || getCurrentTime(),
+        estimatedDurationMinutes: Number(estimatedDurationMinutes) || 60,
         templateId: selectedTemplate?.id ?? undefined,
         notes: notes.trim() || undefined,
       },
       {
         onSuccess: (session) => navigate(`/sessions/${session.id}`),
-      }
-    )
-  }
+      },
+    );
+  };
 
   return (
     <div className="px-4 pt-6 space-y-6">
@@ -66,16 +90,55 @@ export default function NewSession() {
           onChange={(e) => setDate(e.target.value)}
         />
       </div>
+      {/* Start time */}
+      <div className="space-y-2">
+        <label className="text-text-secondary text-sm">
+          Start time (optional)
+        </label>
+        <Input
+          type="time"
+          value={scheduledStartTime}
+          onChange={(e) => setScheduledStartTime(e.target.value)}
+        />
+        <p className="text-text-secondary text-xs">
+          Leave blank to use the current time.
+        </p>
+      </div>
+
+      {/* Estimated duration */}
+      <div className="space-y-2">
+        <label className="text-text-secondary text-sm">
+          Estimated duration (optional)
+        </label>
+        <Input
+          type="number"
+          inputMode="numeric"
+          min={5}
+          max={300}
+          placeholder="60"
+          value={estimatedDurationMinutes}
+          onChange={(e) => setEstimatedDurationMinutes(e.target.value)}
+        />
+        <p className="text-text-secondary text-xs">
+          Leave blank to use 60 minutes.
+        </p>
+      </div>
 
       {/* Template picker */}
       <div className="space-y-2">
-        <label className="text-text-secondary text-sm">Template (optional)</label>
+        <label className="text-text-secondary text-sm">
+          Template (optional)
+        </label>
         {selectedTemplate ? (
           <div className="bg-surface border border-border rounded-xl p-4 flex items-center justify-between">
             <div className="min-w-0">
-              <p className="font-medium text-white truncate">{selectedTemplate.name}</p>
+              <p className="font-medium text-white truncate">
+                {selectedTemplate.name}
+              </p>
               {selectedTemplate.dayOfWeek && (
-                <p className="text-text-secondary text-sm">{selectedTemplate.dayOfWeek}</p>
+                <p className="text-text-secondary text-sm">
+                  {selectedTemplate.dayOfWeek}
+                </p>
               )}
             </div>
             <button
@@ -93,7 +156,9 @@ export default function NewSession() {
             onClick={() => setTemplatePickerOpen(true)}
             className="w-full bg-surface border border-border rounded-xl p-4 flex items-center justify-between text-left active:scale-[0.98] transition-transform"
           >
-            <span className="text-text-secondary">No template — start empty</span>
+            <span className="text-text-secondary">
+              No template — start empty
+            </span>
             <ChevronRight className="w-4 h-4 text-text-secondary shrink-0" />
           </button>
         )}
@@ -102,7 +167,9 @@ export default function NewSession() {
       {/* Session name — only when no template */}
       {!selectedTemplate && (
         <div className="space-y-2">
-          <label className="text-text-secondary text-sm">Session name (optional)</label>
+          <label className="text-text-secondary text-sm">
+            Session name (optional)
+          </label>
           <Input
             placeholder="e.g. Chest Day X"
             value={sessionName}
@@ -122,16 +189,24 @@ export default function NewSession() {
         />
       </div>
 
-      <Button className="w-full" onClick={handleCreate} disabled={createSession.isPending}>
-        {createSession.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Start Session'}
+      <Button
+        className="w-full"
+        onClick={handleCreate}
+        disabled={createSession.isPending}
+      >
+        {createSession.isPending ? (
+          <Loader2 className="w-4 h-4 animate-spin" />
+        ) : (
+          "Start Session"
+        )}
       </Button>
 
       {/* Template picker sheet */}
       <Sheet
         open={templatePickerOpen}
         onOpenChange={(open) => {
-          setTemplatePickerOpen(open)
-          if (!open) setTemplateSearch('')
+          setTemplatePickerOpen(open);
+          if (!open) setTemplateSearch("");
         }}
       >
         <SheetContent>
@@ -154,9 +229,9 @@ export default function NewSession() {
                   key={t.id}
                   type="button"
                   onClick={() => {
-                    setSelectedTemplate(t)
-                    setTemplatePickerOpen(false)
-                    setTemplateSearch('')
+                    setSelectedTemplate(t);
+                    setTemplatePickerOpen(false);
+                    setTemplateSearch("");
                   }}
                   className="w-full bg-surface2 border border-border rounded-xl p-4 text-left active:scale-[0.98] transition-transform"
                 >
@@ -165,15 +240,17 @@ export default function NewSession() {
                     <p className="text-text-secondary text-sm">{t.dayOfWeek}</p>
                   )}
                   {t.description && (
-                    <p className="text-text-secondary text-sm truncate">{t.description}</p>
+                    <p className="text-text-secondary text-sm truncate">
+                      {t.description}
+                    </p>
                   )}
                 </button>
               ))}
               {filteredTemplates.length === 0 && (
                 <p className="text-text-secondary text-center py-4 text-sm">
                   {templates?.length === 0
-                    ? 'No templates yet. Create one from the Templates tab.'
-                    : 'No templates match your search.'}
+                    ? "No templates yet. Create one from the Templates tab."
+                    : "No templates match your search."}
                 </p>
               )}
             </div>
@@ -181,5 +258,5 @@ export default function NewSession() {
         </SheetContent>
       </Sheet>
     </div>
-  )
+  );
 }

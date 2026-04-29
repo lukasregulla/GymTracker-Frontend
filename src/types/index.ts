@@ -45,6 +45,8 @@ export interface SessionDto {
   id: number
   name: string | null
   scheduledDate: string | null
+  scheduledStartTime: string | null
+  estimatedDurationMinutes: number
   isCompleted: boolean
   completedAt: string | null
   notes: string | null
