@@ -1,5 +1,5 @@
 import client from './client'
-import type { RunSessionDto } from '@/types'
+import type { RunSessionDto, ScheduleRunSessionDto } from '@/types'
 
 export const runSessionsApi = {
   create: async (payload: {
@@ -14,13 +14,7 @@ export const runSessionsApi = {
     return data
   },
 
-  schedule: async (payload: {
-    name?: string | null
-    scheduledDate: string
-    notes?: string
-    distanceKm?: number | null
-    runType?: string | null
-  }): Promise<RunSessionDto> => {
+  schedule: async (payload: ScheduleRunSessionDto): Promise<RunSessionDto> => {
     const { data } = await client.post<RunSessionDto>('/api/sessions/run/schedule', payload)
     return data
   },

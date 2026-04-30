@@ -15,6 +15,8 @@ export default function ScheduleRun() {
     searchParams.get('date') ?? format(new Date(), 'yyyy-MM-dd')
   )
   const [name, setName] = useState('')
+  const [scheduledStartTime, setScheduledStartTime] = useState('')
+  const [estimatedDurationMinutes, setEstimatedDurationMinutes] = useState('')
   const [distanceKm, setDistanceKm] = useState('')
   const [runType, setRunType] = useState('')
   const [notes, setNotes] = useState('')
@@ -28,6 +30,8 @@ export default function ScheduleRun() {
     scheduleRun.mutate(
       {
         scheduledDate,
+        scheduledStartTime: scheduledStartTime || null,
+        estimatedDurationMinutes: estimatedDurationMinutes ? parseInt(estimatedDurationMinutes, 10) : null,
         name: name.trim() || null,
         distanceKm: distanceKm ? parseFloat(distanceKm) : null,
         runType: runType || null,
@@ -54,6 +58,25 @@ export default function ScheduleRun() {
       <div className="space-y-2">
         <label className="text-text-secondary text-sm">Scheduled date</label>
         <Input type="date" value={scheduledDate} onChange={(e) => setScheduledDate(e.target.value)} />
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-text-secondary text-sm">Start time</label>
+        <Input
+          type="time"
+          value={scheduledStartTime}
+          onChange={(e) => setScheduledStartTime(e.target.value)}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-text-secondary text-sm">Estimated duration (minutes) — optional</label>
+        <Input
+          inputMode="numeric"
+          placeholder="60"
+          value={estimatedDurationMinutes}
+          onChange={(e) => setEstimatedDurationMinutes(e.target.value)}
+        />
       </div>
 
       <div className="space-y-2">

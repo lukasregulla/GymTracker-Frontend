@@ -174,7 +174,7 @@ export default function Schedule() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-white truncate">
-                  {session.name ?? session.templateName ?? "Custom Workout"}
+                  {session.name ?? session.templateName ?? (session.sessionType === "Run" ? "Run" : "Custom Workout")}
                 </p>
 
                 {getSessionMeta(session) && (

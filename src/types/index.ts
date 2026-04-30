@@ -97,3 +97,13 @@ export interface RunSessionDto {
   averagePaceSecondsPerKm: number | null
   runType: string | null
 }
+
+export interface ScheduleRunSessionDto {
+  name?: string | null
+  scheduledDate: string
+  scheduledStartTime?: string | null
+  estimatedDurationMinutes?: number | null
+  notes?: string
+  distanceKm?: number | null
+  runType?: string | null
+}
