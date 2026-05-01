@@ -31,30 +31,29 @@ export default function Register() {
   }
 
   if (register.isSuccess) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
-        <div className="w-full max-w-sm">
-          <div className="flex flex-col items-center mb-8">
-            <div className="w-14 h-14 rounded-2xl bg-success/20 flex items-center justify-center mb-3">
-              <Mail className="w-7 h-7 text-success" />
-            </div>
-            <h1 className="text-2xl font-bold text-white">Account Created</h1>
-            <p className="text-text-secondary text-sm mt-1 text-center">
-              We've sent a confirmation link to IGNORE THIS{' '}
-              <span className="text-white font-medium">{email}</span>.
-              Your account has been created successfully.
-              You can now log in.
-            </p>
+  return (
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
+      <div className="w-full max-w-sm">
+        <div className="flex flex-col items-center mb-8">
+          <div className="w-14 h-14 rounded-2xl bg-success/20 flex items-center justify-center mb-3">
+            <Mail className="w-7 h-7 text-success" />
           </div>
-          <p className="text-center text-text-secondary text-sm mt-6">
-            <Link to="/login" className="text-primary font-medium">
-              Back to log in
-            </Link>
+          <h1 className="text-2xl font-bold text-white">Account created</h1>
+          <p className="text-text-secondary text-sm mt-1 text-center">
+            Your account has been created successfully.
+            <br />
+            You can now log in.
           </p>
         </div>
+        <p className="text-center text-text-secondary text-sm mt-6">
+          <Link to="/login" className="text-primary font-medium">
+            Back to log in
+          </Link>
+        </p>
       </div>
-    )
-  }
+    </div>
+  )
+}
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
