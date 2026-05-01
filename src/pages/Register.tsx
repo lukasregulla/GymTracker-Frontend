@@ -38,11 +38,12 @@ export default function Register() {
             <div className="w-14 h-14 rounded-2xl bg-success/20 flex items-center justify-center mb-3">
               <Mail className="w-7 h-7 text-success" />
             </div>
-            <h1 className="text-2xl font-bold text-white">Check your email</h1>
+            <h1 className="text-2xl font-bold text-white">Account Created</h1>
             <p className="text-text-secondary text-sm mt-1 text-center">
-              We've sent a confirmation link to{' '}
+              We've sent a confirmation link to IGNORE THIS{' '}
               <span className="text-white font-medium">{email}</span>.
-              Click the link to activate your account.
+              Your account has been created successfully.
+              You can now log in.
             </p>
           </div>
           <p className="text-center text-text-secondary text-sm mt-6">
